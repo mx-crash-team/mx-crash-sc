@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            9
+// Endpoints:                           11
 // Async Callback (empty):               1
-// Total number of exported functions:  12
+// Total number of exported functions:  14
 
 #![no_std]
 
@@ -20,6 +20,8 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
+        deposit => deposit
+        withdraw => withdraw
         newGame => new_game
         status => status
         game_nonce => game_nonce

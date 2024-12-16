@@ -81,6 +81,23 @@ where
     To: TxTo<Env>,
     Gas: TxGas<Env>,
 {
+    pub fn deposit(
+        self,
+    ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
+        self.wrapped_tx
+            .raw_call("deposit")
+            .original_result()
+    }
+
+    pub fn withdraw(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("withdraw")
+            .original_result()
+    }
+
     pub fn new_game<
         Arg0: ProxyArg<u64>,
     >(
@@ -183,4 +200,7 @@ pub enum Status {
 pub struct GameDetails {
     pub status: Status,
     pub nonce: u32,
+    pub duration: u64,
+    pub init_moment: u64,
+    pub current_timestamp: u64,
 }

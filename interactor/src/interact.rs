@@ -23,6 +23,8 @@ pub async fn mx_crash_sc_cli() {
     match cmd.as_str() {
         "deploy" => interact.deploy().await,
         "upgrade" => interact.upgrade().await,
+        "deposit" => interact.deposit().await,
+        "withdraw" => interact.withdraw().await,
         "newGame" => interact.new_game().await,
         "status" => interact.status().await,
         "game_nonce" => interact.game_nonce().await,
@@ -141,6 +143,41 @@ impl ContractInteract {
             .code(&self.contract_code)
             .code_metadata(CodeMetadata::UPGRADEABLE)
             .returns(ReturnsNewAddress)
+            .run()
+            .await;
+
+        println!("Result: {response:?}");
+    }
+
+    pub async fn deposit(&mut self) {
+        let egld_amount = BigUint::<StaticApi>::from(0u128);
+
+        let response = self
+            .interactor
+            .tx()
+            .from(&self.wallet_address)
+            .to(self.state.current_address())
+            .gas(30_000_000u64)
+            .typed(proxy::MxCrashScProxy)
+            .deposit()
+            .egld(egld_amount)
+            .returns(ReturnsResultUnmanaged)
+            .run()
+            .await;
+
+        println!("Result: {response:?}");
+    }
+
+    pub async fn withdraw(&mut self) {
+        let response = self
+            .interactor
+            .tx()
+            .from(&self.wallet_address)
+            .to(self.state.current_address())
+            .gas(30_000_000u64)
+            .typed(proxy::MxCrashScProxy)
+            .withdraw()
+            .returns(ReturnsResultUnmanaged)
             .run()
             .await;
 
