@@ -41,16 +41,4 @@ impl MxCrashScTestState {
         assert_eq!(deployed_address, MX_CRASH_SC_ADDRESS);
         self
     }
-
-    pub fn test_random(&mut self) {
-        /*     let result = BigUint::from(100u64);
-        self.world
-            .tx()
-            .from(OWNER_ADDRESS)
-            .to(MX_CRASH_SC_ADDRESS)
-            .typed(mx_crash_sc_proxy::MxCrashScProxy)
-            .compute_crash_point()
-            .returns(ExpectValue(result))
-            .run();*/
-    }
 }

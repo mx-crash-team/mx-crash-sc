@@ -6,6 +6,9 @@ pub trait EventsModule {
     #[event("ended_game")]
     fn ended_game_event(&self, #[indexed] crash_point: u32, #[indexed] game_nonce: u32);
 
+    #[event("ended_awarding")]
+    fn ended_awarding_event(&self, #[indexed] game_nonce: u32);
+
     #[event("user_bet")]
     fn user_bet_event(
         &self,

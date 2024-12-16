@@ -1,3 +1,4 @@
+pub mod awarding;
 pub mod claim;
 pub mod end_game;
 pub mod init_game;

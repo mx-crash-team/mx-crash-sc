@@ -1,6 +1,6 @@
 use crate::{
     basics::{events, storage},
-    specific::bet::Bet,
+    specific::{bet::Bet, status::Status},
 };
 
 use multiversx_sc::imports::*;
@@ -10,6 +10,10 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
     #[payable("EGLD")]
     #[endpoint(submitBet)]
     fn submit_bet(&self, cash_out: u32) {
+        require!(
+            self.status().get() == Status::Ongoing,
+            "game has not started yet"
+        );
         let current_timestamp = self.blockchain().get_block_timestamp();
         let game_times = self.game_times().get();
         require!(

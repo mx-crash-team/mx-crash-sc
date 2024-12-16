@@ -21,6 +21,10 @@ pub trait StorageModule {
     #[storage_mapper("gameNonce")]
     fn game_nonce(&self) -> SingleValueMapper<u32>;
 
+    #[view]
+    #[storage_mapper("crashPoint")]
+    fn crash_point(&self) -> SingleValueMapper<u32>;
+
     #[storage_mapper("bet")]
     fn bet(&self, address: &ManagedAddress) -> SingleValueMapper<Bet<Self::Api>>;
 

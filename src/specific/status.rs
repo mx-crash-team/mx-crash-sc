@@ -5,4 +5,5 @@ use multiversx_sc::derive_imports::*;
 pub enum Status {
     Ongoing,
     Ended,
+    Awarding,
 }

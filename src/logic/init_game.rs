@@ -1,5 +1,6 @@
 use crate::{
     basics::{
+        constants::TEN_MINUTES,
         events,
         storage::{self},
     },
@@ -22,6 +23,10 @@ pub trait InitGameModule:
         require!(
             self.status().get() == Status::Ended,
             "another game is curently ongoing"
+        );
+        require!(
+            duration <= TEN_MINUTES,
+            "duration cannot be greater than 10 min"
         );
         let init_moment = self.blockchain().get_block_timestamp();
         self.game_times().set(GameTimes {
