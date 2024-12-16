@@ -138,6 +138,28 @@ where
             .original_result()
     }
 
+    pub fn contestants(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, MultiValueEncoded<Env::Api, ManagedAddress<Env::Api>>> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("contestants")
+            .original_result()
+    }
+
+    pub fn available_prize<
+        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
+    >(
+        self,
+        address: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, BigUint<Env::Api>> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("available_prize")
+            .argument(&address)
+            .original_result()
+    }
+
     pub fn submit_bet<
         Arg0: ProxyArg<u32>,
     >(

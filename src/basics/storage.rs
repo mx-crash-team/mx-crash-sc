@@ -28,9 +28,11 @@ pub trait StorageModule {
     #[storage_mapper("bet")]
     fn bet(&self, address: &ManagedAddress) -> SingleValueMapper<Bet<Self::Api>>;
 
+    #[view]
     #[storage_mapper("contestants")]
     fn contestants(&self) -> UnorderedSetMapper<ManagedAddress>;
 
+    #[view]
     #[storage_mapper("availablePrize")]
     fn available_prize(&self, address: &ManagedAddress) -> SingleValueMapper<BigUint>;
 }
