@@ -1,6 +1,6 @@
 #![no_std]
 
-use basics::storage;
+use basics::{events, storage};
 use logic::{claim, end_game, init_game, submit_bet};
 use multiversx_sc::imports::*;
 use specific::{crashpoint, status::Status};
@@ -18,10 +18,12 @@ pub trait MxCrashSc:
     + crashpoint::CrashpointModule
     + end_game::EndGameModule
     + claim::ClaimModule
+    + events::EventsModule
 {
     #[init]
     fn init(&self) {
         self.status().set(Status::Ended);
+        self.game_nonce().set(0);
     }
 
     #[upgrade]

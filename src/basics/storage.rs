@@ -13,11 +13,13 @@ pub trait StorageModule {
     #[storage_mapper("debt")]
     fn debt(&self) -> SingleValueMapper<BigUint>;
 
+    #[view]
     #[storage_mapper("status")]
     fn status(&self) -> SingleValueMapper<Status>;
 
-    #[storage_mapper("status")]
-    fn crash_point(&self) -> SingleValueMapper<u32>;
+    #[view]
+    #[storage_mapper("gameNonce")]
+    fn game_nonce(&self) -> SingleValueMapper<u32>;
 
     #[storage_mapper("bet")]
     fn bet(&self, address: &ManagedAddress) -> SingleValueMapper<Bet<Self::Api>>;

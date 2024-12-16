@@ -12,9 +12,10 @@ pub trait CrashpointModule: storage::StorageModule {
         BigUint::from_bytes_be_buffer(&ManagedBuffer::from(&msb))
     }
 
-    fn compute_crash_point(&self) -> BigUint {
+    fn compute_crash_point(&self) -> u32 {
         let high_pow_of_2 = BigUint::from(2u64).pow(52u32);
         let value = self.compute_randomness();
-        (&high_pow_of_2 * 100u64 - &value) / (high_pow_of_2 - value)
+        let crash_point = (&high_pow_of_2 * 100u64 - &value) / (high_pow_of_2 - value);
+        crash_point.to_u64().unwrap() as u32
     }
 }

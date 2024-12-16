@@ -1,5 +1,8 @@
 use crate::{
-    basics::storage::{self},
+    basics::{
+        events,
+        storage::{self},
+    },
     specific::{
         crashpoint,
         game_times::{GameTimes, Timestamp},
@@ -10,7 +13,9 @@ use crate::{
 use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
-pub trait InitGameModule: storage::StorageModule + crashpoint::CrashpointModule {
+pub trait InitGameModule:
+    storage::StorageModule + crashpoint::CrashpointModule + events::EventsModule
+{
     #[only_owner]
     #[endpoint(newGame)]
     fn new_game(&self, duration: Timestamp) {
@@ -23,15 +28,12 @@ pub trait InitGameModule: storage::StorageModule + crashpoint::CrashpointModule 
             duration,
             init_moment,
         });
-
-        let crashpoint = self.compute_crash_point();
-        self.crash_point().set(crashpoint.to_u64().unwrap() as u32);
-
         let sc_address = self.blockchain().get_sc_address();
         let balance = self.blockchain().get_balance(&sc_address);
         let debt = self.debt().get();
 
         self.available_bet_amount().set(balance - debt);
         self.status().set(Status::Ongoing);
+        self.started_game_event(self.game_nonce().get());
     }
 }

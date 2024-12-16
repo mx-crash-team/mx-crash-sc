@@ -94,6 +94,24 @@ where
             .original_result()
     }
 
+    pub fn status(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, Status> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("status")
+            .original_result()
+    }
+
+    pub fn game_nonce(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, u32> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("game_nonce")
+            .original_result()
+    }
+
     pub fn submit_bet<
         Arg0: ProxyArg<u32>,
     >(
@@ -132,4 +150,11 @@ where
             .raw_call("claim")
             .original_result()
     }
+}
+
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, PartialEq)]
+pub enum Status {
+    Ongoing,
+    Ended,
 }

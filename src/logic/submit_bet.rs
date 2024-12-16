@@ -1,9 +1,12 @@
-use crate::{basics::storage, specific::bet::Bet};
+use crate::{
+    basics::{events, storage},
+    specific::bet::Bet,
+};
 
 use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
-pub trait BettingModule: storage::StorageModule {
+pub trait BettingModule: storage::StorageModule + events::EventsModule {
     #[payable("EGLD")]
     #[endpoint(submitBet)]
     fn submit_bet(&self, cash_out: u32) {
@@ -20,6 +23,7 @@ pub trait BettingModule: storage::StorageModule {
             *available_bet_amount -= &payment * cash_out;
         });
 
+        self.user_bet_event(&caller, &payment, cash_out);
         self.bet(&caller).set(Bet {
             amount: payment,
             cash_out,
