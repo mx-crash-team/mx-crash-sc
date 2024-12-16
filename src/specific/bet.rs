@@ -2,7 +2,7 @@ use multiversx_sc::derive_imports::*;
 use multiversx_sc::imports::*;
 
 #[type_abi]
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, Clone)]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, Debug)]
 pub struct Bet<M>
 where
     M: ManagedTypeApi,

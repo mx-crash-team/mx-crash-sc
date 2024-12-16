@@ -12,7 +12,7 @@ path = "src/interactor_main.rs"
 [lib]
 path = "src/interact.rs"
 
-[dependencies.mx_crash_sc]
+[dependencies.mx-crash-sc]
 path = ".."
 
 [dependencies.multiversx-sc-snippets]
@@ -28,4 +28,3 @@ toml = "0.8.6"
 
 [features]
 chain-simulator-tests = []
-
