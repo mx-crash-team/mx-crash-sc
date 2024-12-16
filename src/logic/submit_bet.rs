@@ -17,7 +17,7 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
         let current_timestamp = self.blockchain().get_block_timestamp();
         let game_times = self.game_times().get();
         require!(
-            game_times.init_moment + game_times.duration < current_timestamp,
+            game_times.init_moment + game_times.duration > current_timestamp,
             "bet submission has ended"
         );
 
