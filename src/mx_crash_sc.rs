@@ -30,4 +30,26 @@ pub trait MxCrashSc:
 
     #[upgrade]
     fn upgrade(&self) {}
+
+    #[only_owner]
+    #[payable("EGLD")]
+    #[endpoint]
+    fn deposit(&self) {}
+
+    #[only_owner]
+    #[endpoint]
+    fn withdraw(&self) {
+        require!(
+            self.status().get() == Status::Ended,
+            "a game is currently ongoing"
+        );
+
+        let caller = self.blockchain().get_caller();
+        let sc_address = self.blockchain().get_sc_address();
+
+        let balance = self.blockchain().get_balance(&sc_address);
+        let debt = self.debt().get();
+
+        self.send().direct_egld(&caller, &(balance - debt));
+    }
 }
