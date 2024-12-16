@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            7
+// Endpoints:                            9
 // Async Callback (empty):               1
-// Total number of exported functions:  10
+// Total number of exported functions:  12
 
 #![no_std]
 
@@ -23,10 +23,12 @@ multiversx_sc_wasm_adapter::endpoints! {
         newGame => new_game
         status => status
         game_nonce => game_nonce
+        crash_point => crash_point
         submitBet => submit_bet
         endGame => end_game
-        compute_prizes => compute_prizes
         claim => claim
+        compute_prizes => compute_prizes
+        getGameDetails => get_game_details
     )
 }
 

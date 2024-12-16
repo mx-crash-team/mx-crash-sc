@@ -32,7 +32,7 @@ pub trait EndGameModule:
 
         let game_nonce = self.game_nonce().get();
         let crash_point = self.compute_crash_point();
-        self.crash_point().set(&crash_point);
+        self.crash_point().set(crash_point);
 
         self.status().set(Status::Awarding);
         self.ended_game_event(crash_point, game_nonce);

@@ -1,2 +1,6 @@
 [[proxy]]
 path = "src/mx_crash_sc_proxy.rs"
+
+[[proxy]]
+path = "interactor/src/proxy.rs"
+ 
