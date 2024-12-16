@@ -10,6 +10,13 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
     #[payable("EGLD")]
     #[endpoint(submitBet)]
     fn submit_bet(&self, cash_out: u32) {
+        let current_timestamp = self.blockchain().get_block_timestamp();
+        let game_times = self.game_times().get();
+        require!(
+            game_times.init_moment + game_times.duration > current_timestamp,
+            "bet submission has ended"
+        );
+
         let caller = self.blockchain().get_caller();
         let payment = self.call_value().egld_value().clone_value();
 

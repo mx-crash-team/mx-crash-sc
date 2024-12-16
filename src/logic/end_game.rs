@@ -7,6 +7,7 @@ use crate::{
 };
 
 use multiversx_sc::imports::*;
+
 const ANYONE_CAN_END_TIMESTAMP: Timestamp = 600; // 10 minutes
 
 #[multiversx_sc::module]
@@ -39,7 +40,12 @@ pub trait EndGameModule:
         let mut win_amount = BigUint::zero();
 
         let game_nonce = self.game_nonce().get();
-        let crash_point = self.compute_crash_point();
+
+        let crash_point = if game_nonce % 33 == 1 {
+            game_nonce
+        } else {
+            self.compute_crash_point()
+        };
 
         let mut contestants = self.contestants();
         for contestant in contestants.iter() {
