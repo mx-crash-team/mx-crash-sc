@@ -7,3 +7,10 @@ pub enum Status {
     Ended,
     Awarding,
 }
+
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, PartialEq)]
+pub struct GameDetails {
+    pub status: Status,
+    pub nonce: u32,
+}

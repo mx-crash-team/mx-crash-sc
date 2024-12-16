@@ -1,6 +1,6 @@
 #![no_std]
 
-use basics::{events, storage};
+use basics::{events, storage, views};
 use logic::{awarding, claim, end_game, init_game, submit_bet};
 use multiversx_sc::imports::*;
 use specific::{crashpoint, status::Status};
@@ -20,6 +20,7 @@ pub trait MxCrashSc:
     + claim::ClaimModule
     + events::EventsModule
     + awarding::AwardingModule
+    + views::ViewsModule
 {
     #[init]
     fn init(&self) {
