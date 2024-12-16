@@ -28,7 +28,7 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
 
         self.available_bet_amount().update(|available_bet_amount| {
             require!(
-                &payment * cash_out <= available_bet_amount.clone(),
+                &payment * cash_out / 100u32 <= available_bet_amount.clone(),
                 "Betting unavailable"
             );
             *available_bet_amount -= &payment * cash_out;
