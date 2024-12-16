@@ -31,11 +31,7 @@ pub trait EndGameModule:
         );
 
         let game_nonce = self.game_nonce().get();
-        let crash_point = if game_nonce % 33 == 1 {
-            game_nonce
-        } else {
-            self.compute_crash_point()
-        };
+        let crash_point = self.compute_crash_point();
         self.crash_point().set(&crash_point);
 
         self.status().set(Status::Awarding);

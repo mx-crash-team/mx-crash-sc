@@ -15,7 +15,11 @@ pub trait CrashpointModule: storage::StorageModule {
     fn compute_crash_point(&self) -> u32 {
         let high_pow_of_2 = BigUint::from(2u64).pow(52u32);
         let value = self.compute_randomness();
-        let crash_point = (&high_pow_of_2 * 100u64 - &value) / (high_pow_of_2 - value);
-        crash_point.to_u64().unwrap() as u32
+        if value.clone().rem(33u64) == 1 {
+            return 100u32;
+        } else {
+            let crash_point = (&high_pow_of_2 * 100u64 - &value) / (high_pow_of_2 - value);
+            crash_point.to_u64().unwrap() as u32
+        }
     }
 }
