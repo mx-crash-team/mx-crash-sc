@@ -1,12 +1,28 @@
 #![no_std]
 
-#[allow(unused_imports)]
+use basics::storage;
+use logic::{claim, end_game, init_game, submit_bet};
 use multiversx_sc::imports::*;
+use specific::{crashpoint, status::Status};
+
+mod basics;
+mod logic;
+pub mod mx_crash_sc_proxy;
+mod specific;
 
 #[multiversx_sc::contract]
-pub trait MxCrashSc {
+pub trait MxCrashSc:
+    init_game::InitGameModule
+    + storage::StorageModule
+    + submit_bet::BettingModule
+    + crashpoint::CrashpointModule
+    + end_game::EndGameModule
+    + claim::ClaimModule
+{
     #[init]
-    fn init(&self) {}
+    fn init(&self) {
+        self.status().set(Status::Ended);
+    }
 
     #[upgrade]
     fn upgrade(&self) {}

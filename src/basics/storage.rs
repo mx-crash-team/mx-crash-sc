@@ -1,0 +1,30 @@
+use multiversx_sc::imports::*;
+
+use crate::specific::{bet::Bet, game_times::GameTimes, status::Status};
+
+#[multiversx_sc::module]
+pub trait StorageModule {
+    #[storage_mapper("gameTimes")]
+    fn game_times(&self) -> SingleValueMapper<GameTimes>;
+
+    #[storage_mapper("availableBetAmount")]
+    fn available_bet_amount(&self) -> SingleValueMapper<BigUint>;
+
+    #[storage_mapper("debt")]
+    fn debt(&self) -> SingleValueMapper<BigUint>;
+
+    #[storage_mapper("status")]
+    fn status(&self) -> SingleValueMapper<Status>;
+
+    #[storage_mapper("status")]
+    fn crash_point(&self) -> SingleValueMapper<u32>;
+
+    #[storage_mapper("bet")]
+    fn bet(&self, address: &ManagedAddress) -> SingleValueMapper<Bet<Self::Api>>;
+
+    #[storage_mapper("contestants")]
+    fn contestants(&self) -> UnorderedSetMapper<ManagedAddress>;
+
+    #[storage_mapper("availablePrize")]
+    fn available_prize(&self, address: &ManagedAddress) -> SingleValueMapper<BigUint>;
+}
