@@ -3,7 +3,7 @@
 use basics::{events, storage, views};
 use logic::{awarding, claim, end_game, init_game, submit_bet};
 use multiversx_sc::imports::*;
-use specific::{crashpoint, status::Status};
+use specific::{crashpoint, game_times::GameTimes, status::Status};
 
 mod basics;
 mod logic;
@@ -26,6 +26,10 @@ pub trait MxCrashSc:
     fn init(&self) {
         self.status().set(Status::Ended);
         self.game_nonce().set(0);
+        self.game_times().set(GameTimes {
+            duration: 0,
+            init_moment: self.blockchain().get_block_timestamp(),
+        });
     }
 
     #[upgrade]
