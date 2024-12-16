@@ -40,9 +40,13 @@ pub trait AwardingModule:
                 continue;
             }
             self.available_prize(&contestant)
-                .update(|amount| *amount += &bet.amount * bet.cash_out);
-            self.winner_announcement_event(&contestant, &(&bet.amount * bet.cash_out), game_nonce);
-            win_amount += bet.amount * bet.cash_out;
+                .update(|amount| *amount += &bet.amount * bet.cash_out / 100u32);
+            self.winner_announcement_event(
+                &contestant,
+                &(&bet.amount * bet.cash_out / 100u32),
+                game_nonce,
+            );
+            win_amount += bet.amount * bet.cash_out / 100u32;
         }
         for contestant in checked_contestants.iter() {
             contestants.swap_remove(&contestant);
