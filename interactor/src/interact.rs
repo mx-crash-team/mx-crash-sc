@@ -32,7 +32,7 @@ pub async fn mx_crash_sc_cli() {
         "submitBet" => interact.submit_bet().await,
         "endGame" => interact.end_game().await,
         "claim" => interact.claim().await,
-        "compute_prizes" => interact.compute_prizes().await,
+        "computePrizes" => interact.compute_prizes().await,
         "getGameDetails" => interact.get_game_details().await,
         _ => panic!("unknown command: {}", &cmd),
     }
@@ -328,3 +328,4 @@ impl ContractInteract {
     }
 
 }
+

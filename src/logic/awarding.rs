@@ -13,7 +13,7 @@ use multiversx_sc::imports::*;
 pub trait AwardingModule:
     storage::StorageModule + crashpoint::CrashpointModule + events::EventsModule
 {
-    #[endpoint]
+    #[endpoint(computePrizes)]
     fn compute_prizes(&self) {
         require!(
             self.status().get() == Status::Awarding,

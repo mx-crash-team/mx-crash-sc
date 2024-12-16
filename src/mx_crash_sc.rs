@@ -37,11 +37,11 @@ pub trait MxCrashSc:
 
     #[only_owner]
     #[payable("EGLD")]
-    #[endpoint]
+    #[endpoint(deposit)]
     fn deposit(&self) {}
 
     #[only_owner]
-    #[endpoint]
+    #[endpoint(withdraw)]
     fn withdraw(&self) {
         require!(
             self.status().get() == Status::Ended,

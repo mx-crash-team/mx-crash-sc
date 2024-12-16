@@ -29,7 +29,7 @@ multiversx_sc_wasm_adapter::endpoints! {
         submitBet => submit_bet
         endGame => end_game
         claim => claim
-        compute_prizes => compute_prizes
+        computePrizes => compute_prizes
         getGameDetails => get_game_details
     )
 }
