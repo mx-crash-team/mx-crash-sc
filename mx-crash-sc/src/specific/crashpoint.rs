@@ -11,9 +11,7 @@ pub trait CrashpointModule: storage::StorageModule {
         if rand.clone().rem(33u64) == 0 {
             return BigUint::zero();
         }
-        let mut msb = [0u8; 7];
-        let _ = rand.to_bytes_be_buffer().load_slice(0, &mut msb);
-        BigUint::from_bytes_be_buffer(&ManagedBuffer::from(&msb))
+        rand.rem(HIGH_POW_OF_2)
     }
 
     fn compute_crash_point(&self) -> u32 {
