@@ -26,7 +26,12 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
         let contestant: ManagedAddress = if optional_contestant.is_none() {
             caller
         } else {
-            optional_contestant.into_option().unwrap()
+            let user = optional_contestant.into_option().unwrap();
+            require!(
+                self.user_permission(&user).get() == caller,
+                "Not allowed to bet for user"
+            );
+            user
         };
         let payment = self.call_value().egld_value().clone_value();
 
