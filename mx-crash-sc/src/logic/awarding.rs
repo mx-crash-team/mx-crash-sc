@@ -39,14 +39,11 @@ pub trait AwardingModule:
             if bet.cash_out > crash_point {
                 continue;
             }
+            let prize_amount = &bet.amount * bet.cash_out / 100u32;
             self.available_prize(&contestant)
-                .update(|amount| *amount += &bet.amount * bet.cash_out / 100u32);
-            self.winner_announcement_event(
-                &contestant,
-                &(&bet.amount * bet.cash_out / 100u32),
-                game_nonce,
-            );
-            win_amount += bet.amount * bet.cash_out / 100u32;
+                .update(|amount| *amount += &prize_amount);
+            self.winner_announcement_event(&contestant, &prize_amount, game_nonce);
+            win_amount += prize_amount;
         }
         for contestant in checked_contestants.iter() {
             contestants.swap_remove(&contestant);

@@ -35,12 +35,13 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
             "cannot submit multiple bets"
         );
 
+        let aimed_win_amount = &payment * cash_out / 100u32;
         self.available_bet_amount().update(|available_bet_amount| {
             require!(
-                &payment * cash_out / 100u32 <= available_bet_amount.clone(),
+                aimed_win_amount <= available_bet_amount.clone(),
                 "Betting unavailable"
             );
-            *available_bet_amount -= &payment * cash_out;
+            *available_bet_amount -= aimed_win_amount;
         });
 
         self.user_bet_event(&contestant, &payment, cash_out);
