@@ -1,6 +1,6 @@
 use multiversx_sc::imports::*;
 
-use crate::specific::status::GameDetails;
+use crate::specific::{bet::ContestantDetails, status::GameDetails};
 
 use super::storage;
 
@@ -16,5 +16,18 @@ pub trait ViewsModule: storage::StorageModule {
             init_moment: game_times.init_moment,
             current_timestamp: self.blockchain().get_block_timestamp(),
         }
+    }
+    #[view(getContestantDetails)]
+    fn contestant_details(&self) -> ManagedVec<ContestantDetails<Self::Api>> {
+        let mut contestant_details = ManagedVec::new();
+        for contestant in self.contestants().iter() {
+            let bet = self.bet(&contestant).get();
+            contestant_details.push(ContestantDetails {
+                address: contestant,
+                amount: bet.amount,
+                cash_out: bet.cash_out,
+            });
+        }
+        contestant_details
     }
 }

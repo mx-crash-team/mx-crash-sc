@@ -5,15 +5,10 @@ use rust_interact::ContractInteract;
 // In order for this test to work, make sure that the `config.toml` file contains the real blockchain config (or choose it manually)
 // Can be run with `sc-meta test`.
 #[tokio::test]
-//#[ignore = "run on demand, relies on real blockchain state"]
+// #[ignore = "run on demand, relies on real blockchain state"]
 async fn deploy_test_mx_crash_sc() {
     let mut interactor = ContractInteract::new().await;
 
     interactor.deploy().await;
-    for _i in 0..50 {
-        interactor.new_game().await;
-        interactor.submit_bet().await;
-        interactor.end_game().await;
-        interactor.compute_prizes().await;
-    }
+    interactor.generate_crash_point().await;
 }

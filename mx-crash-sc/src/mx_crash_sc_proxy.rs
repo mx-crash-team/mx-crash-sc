@@ -232,6 +232,15 @@ where
             .raw_call("getGameDetails")
             .original_result()
     }
+
+    pub fn contestant_details(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ManagedVec<Env::Api, ContestantDetails<Env::Api>>> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("getContestantDetails")
+            .original_result()
+    }
 }
 
 #[type_abi]
@@ -250,4 +259,15 @@ pub struct GameDetails {
     pub duration: u64,
     pub init_moment: u64,
     pub current_timestamp: u64,
+}
+
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, ManagedVecItem, Clone, Debug)]
+pub struct ContestantDetails<Api>
+where
+    Api: ManagedTypeApi,
+{
+    pub address: ManagedAddress<Api>,
+    pub amount: BigUint<Api>,
+    pub cash_out: u32,
 }
