@@ -98,6 +98,28 @@ where
             .original_result()
     }
 
+    pub fn give_permission<
+        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
+    >(
+        self,
+        permitted_address: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("givePermission")
+            .argument(&permitted_address)
+            .original_result()
+    }
+
+    pub fn revoke_permission(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("revokePermission")
+            .original_result()
+    }
+
     pub fn new_game<
         Arg0: ProxyArg<u64>,
     >(
@@ -162,13 +184,16 @@ where
 
     pub fn submit_bet<
         Arg0: ProxyArg<u32>,
+        Arg1: ProxyArg<OptionalValue<ManagedAddress<Env::Api>>>,
     >(
         self,
         cash_out: Arg0,
+        optional_contestant: Arg1,
     ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
         self.wrapped_tx
             .raw_call("submitBet")
             .argument(&cash_out)
+            .argument(&optional_contestant)
             .original_result()
     }
 

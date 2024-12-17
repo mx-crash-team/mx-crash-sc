@@ -1,19 +1,10 @@
-[package]
-name = "mx-crash-sc"
-version = "0.0.0"
-publish = false
-edition = "2021"
-authors = ["you"]
-
-[lib]
-path = "src/mx_crash_sc.rs"
-
-[dependencies.multiversx-sc]
-version = "0.54.4"
-
-
-[dev-dependencies.multiversx-sc-scenario]
-version = "0.54.4"
-
 [workspace]
-members = [".", "meta", "interactor"]
+resolver = "2"
+
+members = [
+    "mx-crash-sc",
+    "mx-crash-sc/meta",
+    "mx-crash-sc/interactor",
+    "mx-pay-for-user-sc",
+    "mx-pay-for-user-sc/meta",
+]

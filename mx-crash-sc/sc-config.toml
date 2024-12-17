@@ -3,4 +3,6 @@ path = "src/mx_crash_sc_proxy.rs"
 
 [[proxy]]
 path = "interactor/src/proxy.rs"
- 
+
+[[proxy]]
+path = "../mx-pay-for-user-sc/src/mx_crash_sc_proxy.rs"

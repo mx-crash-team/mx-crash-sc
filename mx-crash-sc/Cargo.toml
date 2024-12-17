@@ -1,0 +1,16 @@
+[package]
+name = "mx-crash-sc"
+version = "0.0.0"
+publish = false
+edition = "2021"
+authors = ["you"]
+
+[lib]
+path = "src/mx_crash_sc.rs"
+
+[dependencies.multiversx-sc]
+version = "0.54.4"
+
+
+[dev-dependencies.multiversx-sc-scenario]
+version = "0.54.4"

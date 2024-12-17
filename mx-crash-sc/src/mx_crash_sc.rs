@@ -56,4 +56,16 @@ pub trait MxCrashSc:
 
         self.send().direct_egld(&caller, &(balance - debt));
     }
+
+    #[endpoint(givePermission)]
+    fn give_permission(&self, permitted_address: ManagedAddress) {
+        let caller = self.blockchain().get_caller();
+        self.user_permission(&caller).set(permitted_address);
+    }
+
+    #[endpoint(revokePermission)]
+    fn revoke_permission(&self) {
+        let caller = self.blockchain().get_caller();
+        self.user_permission(&caller).clear();
+    }
 }

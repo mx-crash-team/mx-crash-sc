@@ -1309,23 +1309,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mx-pay-for-user-sc"
-version = "0.0.0"
-dependencies = [
- "multiversx-sc",
- "multiversx-sc-scenario",
- "num-bigint",
-]
-
-[[package]]
-name = "mx-pay-for-user-sc-meta"
-version = "0.0.0"
-dependencies = [
- "multiversx-sc-meta-lib",
- "mx-pay-for-user-sc",
-]
-
-[[package]]
 name = "native-tls"
 version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"

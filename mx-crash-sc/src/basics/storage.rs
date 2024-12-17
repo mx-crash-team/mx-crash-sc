@@ -35,4 +35,7 @@ pub trait StorageModule {
     #[view]
     #[storage_mapper("availablePrize")]
     fn available_prize(&self, address: &ManagedAddress) -> SingleValueMapper<BigUint>;
+
+    #[storage_mapper("userPermission")]
+    fn user_permission(&self, address: &ManagedAddress) -> SingleValueMapper<ManagedAddress>;
 }
