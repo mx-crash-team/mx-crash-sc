@@ -4,6 +4,7 @@
 use multiversx_sc::imports::*;
 mod bot_operations;
 mod mx_crash_sc_proxy;
+pub mod mx_pay_for_user_proxy;
 mod storage;
 mod user_operations;
 

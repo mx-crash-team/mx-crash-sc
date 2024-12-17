@@ -1,0 +1,7 @@
+
+[[proxy]]
+path = "src/mx_pay_for_user_proxy.rs"
+
+
+[[proxy]]
+path = "interactor/src/proxy.rs"
