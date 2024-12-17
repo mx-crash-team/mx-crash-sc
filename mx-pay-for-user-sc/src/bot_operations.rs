@@ -11,7 +11,7 @@ pub trait BotOperationsModule: storage::StorageModule {
             "unavailable funds"
         );
         self.deposited_funds(&caller).update(|amount| {
-            require!(&bet >= amount, "unavailable funds");
+            require!(&bet <= amount, "unavailable funds");
             *amount -= &bet;
         });
 

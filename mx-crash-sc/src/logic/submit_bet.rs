@@ -23,12 +23,11 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
 
         let caller = self.blockchain().get_caller();
 
-        let contestant: ManagedAddress;
-        if optional_contestant.is_none() {
-            contestant = caller;
+        let contestant: ManagedAddress = if optional_contestant.is_none() {
+            caller
         } else {
-            contestant = optional_contestant.into_option().unwrap();
-        }
+            optional_contestant.into_option().unwrap()
+        };
         let payment = self.call_value().egld_value().clone_value();
 
         require!(
