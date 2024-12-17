@@ -6,7 +6,8 @@ use multiversx_sc::imports::*;
 pub trait CrashpointModule: storage::StorageModule {
     fn compute_randomness(&self) -> u64 {
         let random_bytes = self.blockchain().get_block_random_seed();
-        let rand = BigUint::from(random_bytes.as_managed_buffer());
+        let hashed_bytes = self.crypto().sha256(random_bytes.as_managed_buffer());
+        let rand = BigUint::from(hashed_bytes.as_managed_buffer());
         if rand.clone().rem(33u64) == 0 {
             return 0u64;
         }
