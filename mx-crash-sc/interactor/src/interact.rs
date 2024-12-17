@@ -33,7 +33,7 @@ pub async fn mx_crash_sc_cli() {
         "crash_point" => interact.crash_point().await,
         "contestants" => interact.contestants().await,
         "available_prize" => interact.available_prize().await,
-        "submitBet" => interact.submit_bet(interact.wallet_address.clone()).await,
+        "submitBet" => interact.submit_bet().await,
         "endGame" => interact.end_game().await,
         "claim" => interact.claim().await,
         "computePrizes" => interact.compute_prizes().await,
@@ -313,7 +313,7 @@ impl ContractInteract {
         println!("Result: {result_value:?}");
     }
 
-    pub async fn submit_bet(&mut self, address: Address) {
+    pub async fn submit_bet(&mut self) {
         let egld_amount = BigUint::<StaticApi>::from(0u128);
 
         let cash_out = 0u32;
@@ -322,7 +322,7 @@ impl ContractInteract {
         let response = self
             .interactor
             .tx()
-            .from(&address)
+            .from(&self.wallet_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
