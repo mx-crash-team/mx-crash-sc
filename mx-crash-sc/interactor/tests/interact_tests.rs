@@ -10,5 +10,5 @@ async fn deploy_test_mx_crash_sc() {
     let mut interactor = ContractInteract::new().await;
 
     interactor.deploy().await;
-    interactor.generate_crash_point().await;
+    //    interactor.generate_crash_point().await;
 }

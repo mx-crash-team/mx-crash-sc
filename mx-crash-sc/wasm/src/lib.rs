@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           16
+// Endpoints:                           23
 // Async Callback (empty):               1
-// Total number of exported functions:  19
+// Total number of exported functions:  26
 
 #![no_std]
 
@@ -24,8 +24,11 @@ multiversx_sc_wasm_adapter::endpoints! {
         withdraw => withdraw
         givePermission => give_permission
         revokePermission => revoke_permission
+        setDuration => set_duration
+        setInstantCrashChance => set_instant_crash_chance
         newGame => new_game
         status => status
+        game_duration => game_duration
         game_nonce => game_nonce
         crash_point => crash_point
         contestants => contestants
@@ -36,6 +39,10 @@ multiversx_sc_wasm_adapter::endpoints! {
         computePrizes => compute_prizes
         getGameDetails => get_game_details
         getContestantDetails => contestant_details
+        isAdmin => is_admin
+        addAdmin => add_admin
+        removeAdmin => remove_admin
+        getAdmins => admins
     )
 }
 

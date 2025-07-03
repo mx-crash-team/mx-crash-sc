@@ -120,7 +120,7 @@ where
             .original_result()
     }
 
-    pub fn new_game<
+    pub fn set_duration<
         Arg0: ProxyArg<u64>,
     >(
         self,
@@ -128,8 +128,30 @@ where
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
         self.wrapped_tx
             .payment(NotPayable)
-            .raw_call("newGame")
+            .raw_call("setDuration")
             .argument(&duration)
+            .original_result()
+    }
+
+    pub fn set_instant_crash_chance<
+        Arg0: ProxyArg<u64>,
+    >(
+        self,
+        chance: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("setInstantCrashChance")
+            .argument(&chance)
+            .original_result()
+    }
+
+    pub fn new_game(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("newGame")
             .original_result()
     }
 
@@ -139,6 +161,15 @@ where
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("status")
+            .original_result()
+    }
+
+    pub fn game_duration(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, u64> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("game_duration")
             .original_result()
     }
 
@@ -239,6 +270,54 @@ where
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("getContestantDetails")
+            .original_result()
+    }
+
+    pub fn is_admin<
+        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
+    >(
+        self,
+        address: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, bool> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("isAdmin")
+            .argument(&address)
+            .original_result()
+    }
+
+    pub fn add_admin<
+        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
+    >(
+        self,
+        address: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("addAdmin")
+            .argument(&address)
+            .original_result()
+    }
+
+    pub fn remove_admin<
+        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
+    >(
+        self,
+        address: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("removeAdmin")
+            .argument(&address)
+            .original_result()
+    }
+
+    pub fn admins(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, MultiValueEncoded<Env::Api, ManagedAddress<Env::Api>>> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("getAdmins")
             .original_result()
     }
 }

@@ -35,7 +35,7 @@ pub async fn mx_crash_sc_cli() {
         "available_prize" => interact.available_prize().await,
         "submitBet" => interact.submit_bet().await,
         "endGame" => interact.end_game().await,
-        "generate_crash_point" => interact.generate_crash_point().await,
+        // "generate_crash_point" => interact.generate_crash_point().await,
         "claim" => interact.claim().await,
         "computePrizes" => interact.compute_prizes().await,
         "getGameDetails" => interact.get_game_details().await,
@@ -225,8 +225,6 @@ impl ContractInteract {
     }
 
     pub async fn new_game(&mut self) {
-        let duration = 5u64;
-
         let response = self
             .interactor
             .tx()
@@ -234,7 +232,7 @@ impl ContractInteract {
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
-            .new_game(duration)
+            .new_game()
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
@@ -352,21 +350,21 @@ impl ContractInteract {
         println!("Result: {response:?}");
     }
 
-    pub async fn generate_crash_point(&mut self) {
-        let response = self
-            .interactor
-            .tx()
-            .from(&self.wallet_address)
-            .to(self.state.current_address())
-            .gas(30_000_000u64)
-            .typed(proxy::MxCrashScProxy)
-            .generate_crash_point()
-            .returns(ReturnsResultUnmanaged)
-            .run()
-            .await;
+    // pub async fn generate_crash_point(&mut self) {
+    //     let response = self
+    //         .interactor
+    //         .tx()
+    //         .from(&self.wallet_address)
+    //         .to(self.state.current_address())
+    //         .gas(30_000_000u64)
+    //         .typed(proxy::MxCrashScProxy)
+    //         .generate_crash_point()
+    //         .returns(ReturnsResultUnmanaged)
+    //         .run()
+    //         .await;
 
-        println!("Result: {response:?}");
-    }
+    //     println!("Result: {response:?}");
+    // }
 
     pub async fn claim(&mut self) {
         let response = self

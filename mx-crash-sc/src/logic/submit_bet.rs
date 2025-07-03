@@ -33,7 +33,7 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
             );
             user
         };
-        let payment = self.call_value().egld_value().clone_value();
+        let payment = self.call_value().egld().clone_value();
 
         require!(
             self.bet(&contestant).is_empty(),

@@ -11,8 +11,12 @@ use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
 pub trait EndGameModule:
-    storage::StorageModule + crashpoint::CrashpointModule + events::EventsModule
+    storage::StorageModule
+    + crashpoint::CrashpointModule
+    + events::EventsModule
+    + multiversx_sc_modules::only_admin::OnlyAdminModule
 {
+    #[only_admin]
     #[endpoint(endGame)]
     fn end_game(&self) {
         require!(
