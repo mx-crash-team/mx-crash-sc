@@ -129,10 +129,8 @@ impl ContractInteract {
             .returns(ReturnsNewAddress)
             .run()
             .await;
-        let new_address_bech32 = bech32::encode(&new_address);
-        self.state.set_address(Bech32Address::from_bech32_string(
-            new_address_bech32.clone(),
-        ));
+        let new_address_bech32 = Bech32Address::from(&new_address);
+        self.state.set_address(new_address_bech32.clone());
 
         println!("new address: {new_address_bech32}");
     }
@@ -191,7 +189,7 @@ impl ContractInteract {
     }
 
     pub async fn give_permission(&mut self) {
-        let permitted_address = bech32::decode("");
+        let permitted_zero_address = Bech32Address::zero("");
 
         let response = self
             .interactor
@@ -200,7 +198,7 @@ impl ContractInteract {
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
-            .give_permission(permitted_address)
+            .give_permission(permitted_zero_address)
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
@@ -297,14 +295,14 @@ impl ContractInteract {
     }
 
     pub async fn available_prize(&mut self) {
-        let address = bech32::decode("");
+        let zero_address = Bech32Address::zero("");
 
         let result_value = self
             .interactor
             .query()
             .to(self.state.current_address())
             .typed(proxy::MxCrashScProxy)
-            .available_prize(address)
+            .available_prize(zero_address)
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
