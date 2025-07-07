@@ -23,7 +23,6 @@ pub async fn mx_crash_sc_cli() {
     match cmd.as_str() {
         "deploy" => interact.deploy().await,
         "upgrade" => interact.upgrade().await,
-        "deposit" => interact.deposit().await,
         "withdraw" => interact.withdraw().await,
         "givePermission" => interact.give_permission().await,
         "revokePermission" => interact.revoke_permission().await,
@@ -33,9 +32,7 @@ pub async fn mx_crash_sc_cli() {
         "crash_point" => interact.crash_point().await,
         "contestants" => interact.contestants().await,
         "available_prize" => interact.available_prize().await,
-        "submitBet" => interact.submit_bet().await,
         "endGame" => interact.end_game().await,
-        // "generate_crash_point" => interact.generate_crash_point().await,
         "claim" => interact.claim().await,
         "computePrizes" => interact.compute_prizes().await,
         "getGameDetails" => interact.get_game_details().await,
@@ -153,9 +150,7 @@ impl ContractInteract {
         println!("Result: {response:?}");
     }
 
-    pub async fn deposit(&mut self) {
-        let egld_amount = BigUint::<StaticApi>::from(0u128);
-
+    pub async fn deposit(&mut self, egld_amount: BigUint<StaticApi>) {
         let response = self
             .interactor
             .tx()
@@ -310,16 +305,18 @@ impl ContractInteract {
         println!("Result: {result_value:?}");
     }
 
-    pub async fn submit_bet(&mut self) {
-        let egld_amount = BigUint::<StaticApi>::from(0u128);
-
-        let cash_out = 0u32;
+    pub async fn submit_bet(
+        &mut self,
+        caller: Address,
+        cash_out: u32,
+        egld_amount: BigUint<StaticApi>,
+    ) {
         let optional_contestant: OptionalValue<ManagedAddress<StaticApi>> = OptionalValue::None;
 
         let response = self
             .interactor
             .tx()
-            .from(&self.wallet_address)
+            .from(caller)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -347,22 +344,6 @@ impl ContractInteract {
 
         println!("Result: {response:?}");
     }
-
-    // pub async fn generate_crash_point(&mut self) {
-    //     let response = self
-    //         .interactor
-    //         .tx()
-    //         .from(&self.wallet_address)
-    //         .to(self.state.current_address())
-    //         .gas(30_000_000u64)
-    //         .typed(proxy::MxCrashScProxy)
-    //         .generate_crash_point()
-    //         .returns(ReturnsResultUnmanaged)
-    //         .run()
-    //         .await;
-
-    //     println!("Result: {response:?}");
-    // }
 
     pub async fn claim(&mut self) {
         let response = self

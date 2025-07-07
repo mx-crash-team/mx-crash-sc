@@ -16,7 +16,7 @@ pub trait InitGameModule:
     fn new_game(&self) {
         require!(
             self.status().get() == Status::Ended,
-            "another game is curently ongoing"
+            "Another game is currently ongoing"
         );
         let init_moment = self.blockchain().get_block_timestamp();
         let duration = self.game_duration().get();
