@@ -1,9 +1,16 @@
 #![no_std]
 
-use basics::{events, storage, views};
+use basics::{
+    constants::{DEFAULT_INSTANT_CRASH_CHANCE, ONE_MINUTE, TEN_MINUTES},
+    events, storage, views,
+};
 use logic::{awarding, claim, end_game, init_game, submit_bet};
 use multiversx_sc::imports::*;
-use specific::{crashpoint, game_times::GameTimes, status::Status};
+use specific::{
+    crashpoint,
+    game_times::{GameTimes, Timestamp},
+    status::Status,
+};
 
 mod basics;
 mod logic;
@@ -21,6 +28,7 @@ pub trait MxCrashSc:
     + events::EventsModule
     + awarding::AwardingModule
     + views::ViewsModule
+    + multiversx_sc_modules::only_admin::OnlyAdminModule
 {
     #[init]
     fn init(&self) {
@@ -30,6 +38,9 @@ pub trait MxCrashSc:
             duration: 0,
             init_moment: self.blockchain().get_block_timestamp(),
         });
+        self.game_duration().set(ONE_MINUTE);
+        self.instant_crash_chance()
+            .set(DEFAULT_INSTANT_CRASH_CHANCE);
     }
 
     #[upgrade]
@@ -67,5 +78,21 @@ pub trait MxCrashSc:
     fn revoke_permission(&self) {
         let caller = self.blockchain().get_caller();
         self.user_permission(&caller).clear();
+    }
+
+    #[only_owner]
+    #[endpoint(setDuration)]
+    fn set_duration(&self, duration: Timestamp) {
+        require!(
+            duration <= TEN_MINUTES,
+            "duration cannot be greater than 10 min"
+        );
+        self.game_duration().set(duration);
+    }
+
+    #[only_owner]
+    #[endpoint(setInstantCrashChance)]
+    fn set_instant_crash_chance(&self, chance: u64) {
+        self.instant_crash_chance().set(chance);
     }
 }

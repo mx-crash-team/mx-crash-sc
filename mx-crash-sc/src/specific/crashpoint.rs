@@ -8,7 +8,10 @@ pub trait CrashpointModule: storage::StorageModule {
         let random_bytes = self.blockchain().get_block_random_seed();
         let hashed_bytes = self.crypto().sha256(random_bytes.as_managed_buffer());
         let rand = BigUint::from(hashed_bytes.as_managed_buffer());
-        if rand.clone().rem(33u64) == 0 {
+
+        let instant_crash_chance = self.instant_crash_chance().get();
+
+        if rand.clone().rem(instant_crash_chance) == 0 {
             return BigUint::zero();
         }
         rand.rem(HIGH_POW_OF_2)

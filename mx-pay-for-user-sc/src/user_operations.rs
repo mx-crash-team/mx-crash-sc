@@ -7,7 +7,7 @@ pub trait UserOperationsModule: storage::StorageModule {
     #[payable("EGLD")]
     fn deposit(&self) {
         let caller = self.blockchain().get_caller();
-        let payment = self.call_value().egld_value().clone_value();
+        let payment = self.call_value().egld().clone_value();
         self.deposited_funds(&caller).update(|amount| {
             *amount += &payment;
         });

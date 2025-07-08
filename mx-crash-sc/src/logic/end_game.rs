@@ -11,23 +11,25 @@ use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
 pub trait EndGameModule:
-    storage::StorageModule + crashpoint::CrashpointModule + events::EventsModule
+    storage::StorageModule
+    + crashpoint::CrashpointModule
+    + events::EventsModule
+    + multiversx_sc_modules::only_admin::OnlyAdminModule
 {
+    #[only_admin]
     #[endpoint(endGame)]
     fn end_game(&self) {
         require!(
             self.status().get() == Status::Ongoing,
             "game was already ended"
         );
-        let caller = self.blockchain().get_caller();
-        let owner = self.blockchain().get_owner_address();
 
         let curent_timestamp = self.blockchain().get_block_timestamp();
         let game_times = self.game_times().get();
 
         require!(
-            caller == owner || curent_timestamp >= game_times.init_moment + TEN_MINUTES,
-            "Only Owner can end game for now"
+            curent_timestamp >= game_times.init_moment + TEN_MINUTES,
+            "The needed time frame has not been reached"
         );
 
         let game_nonce = self.game_nonce().get();

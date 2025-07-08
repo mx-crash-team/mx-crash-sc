@@ -1,14 +1,9 @@
 use crate::{
     basics::{
-        constants::TEN_MINUTES,
         events,
         storage::{self},
     },
-    specific::{
-        crashpoint,
-        game_times::{GameTimes, Timestamp},
-        status::Status,
-    },
+    specific::{crashpoint, game_times::GameTimes, status::Status},
 };
 
 use multiversx_sc::imports::*;
@@ -17,18 +12,14 @@ use multiversx_sc::imports::*;
 pub trait InitGameModule:
     storage::StorageModule + crashpoint::CrashpointModule + events::EventsModule
 {
-    #[only_owner]
     #[endpoint(newGame)]
-    fn new_game(&self, duration: Timestamp) {
+    fn new_game(&self) {
         require!(
             self.status().get() == Status::Ended,
-            "another game is curently ongoing"
-        );
-        require!(
-            duration <= TEN_MINUTES,
-            "duration cannot be greater than 10 min"
+            "Another game is currently ongoing"
         );
         let init_moment = self.blockchain().get_block_timestamp();
+        let duration = self.game_duration().get();
         self.game_times().set(GameTimes {
             duration,
             init_moment,

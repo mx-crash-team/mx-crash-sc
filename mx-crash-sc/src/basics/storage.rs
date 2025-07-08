@@ -1,6 +1,10 @@
 use multiversx_sc::imports::*;
 
-use crate::specific::{bet::Bet, game_times::GameTimes, status::Status};
+use crate::specific::{
+    bet::Bet,
+    game_times::{GameTimes, Timestamp},
+    status::Status,
+};
 
 #[multiversx_sc::module]
 pub trait StorageModule {
@@ -16,6 +20,13 @@ pub trait StorageModule {
     #[view]
     #[storage_mapper("status")]
     fn status(&self) -> SingleValueMapper<Status>;
+
+    #[view]
+    #[storage_mapper("gameDuration")]
+    fn game_duration(&self) -> SingleValueMapper<Timestamp>;
+
+    #[storage_mapper("instantCrashChance")]
+    fn instant_crash_chance(&self) -> SingleValueMapper<u64>;
 
     #[view]
     #[storage_mapper("gameNonce")]
