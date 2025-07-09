@@ -1760,6 +1760,7 @@ dependencies = [
  "multiversx-sc",
  "multiversx-sc-snippets",
  "mx-crash-sc",
+ "regex",
  "serde",
  "toml 0.8.23",
 ]

@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 
-mod config;
+pub mod config;
 mod proxy;
 
 use config::Config;
@@ -19,7 +19,7 @@ pub async fn mx_crash_sc_cli() {
     let mut args = std::env::args();
     let _ = args.next();
     let cmd = args.next().expect("at least one argument required");
-    let mut interact = ContractInteract::new().await;
+    let mut interact = ContractInteract::new(Config::chain_simulator_config()).await;
     match cmd.as_str() {
         "deploy" => interact.deploy().await,
         "upgrade" => interact.upgrade().await,
@@ -29,11 +29,11 @@ pub async fn mx_crash_sc_cli() {
         "newGame" => interact.new_game().await,
         "status" => interact.status().await,
         "game_nonce" => interact.game_nonce().await,
-        "crash_point" => interact.crash_point().await,
+        // "crash_point" => interact.crash_point().await,
         "contestants" => interact.contestants().await,
         "available_prize" => interact.available_prize().await,
         "endGame" => interact.end_game().await,
-        "claim" => interact.claim().await,
+        // "claim" => interact.claim().await,
         "computePrizes" => interact.compute_prizes().await,
         "getGameDetails" => interact.get_game_details().await,
         _ => panic!("unknown command: {}", &cmd),
@@ -81,15 +81,14 @@ impl Drop for State {
 }
 
 pub struct ContractInteract {
-    interactor: Interactor,
+    pub interactor: Interactor,
     wallet_address: Address,
     contract_code: BytesValue,
     state: State,
 }
 
 impl ContractInteract {
-    pub async fn new() -> Self {
-        let config = Config::new();
+    pub async fn new(config: Config) -> Self {
         let mut interactor = Interactor::new(config.gateway_uri())
             .await
             .use_chain_simulator(config.use_chain_simulator());
@@ -115,10 +114,12 @@ impl ContractInteract {
     }
 
     pub async fn deploy(&mut self) {
+        let admin_address = self.get_admin_address().await;
+
         let new_address = self
             .interactor
             .tx()
-            .from(&self.wallet_address)
+            .from(admin_address)
             .gas(60_000_000u64)
             .typed(proxy::MxCrashScProxy)
             .init()
@@ -151,10 +152,11 @@ impl ContractInteract {
     }
 
     pub async fn deposit(&mut self, egld_amount: BigUint<StaticApi>) {
+        let admin_address = self.get_admin_address().await;
         let response = self
             .interactor
             .tx()
-            .from(&self.wallet_address)
+            .from(admin_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -218,10 +220,11 @@ impl ContractInteract {
     }
 
     pub async fn new_game(&mut self) {
+        let admin_address = self.get_admin_address().await;
         let response = self
             .interactor
             .tx()
-            .from(&self.wallet_address)
+            .from(admin_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -261,18 +264,15 @@ impl ContractInteract {
         println!("Result: {result_value:?}");
     }
 
-    pub async fn crash_point(&mut self) {
-        let result_value = self
-            .interactor
+    pub async fn crash_point(&mut self) -> u32 {
+        self.interactor
             .query()
             .to(self.state.current_address())
             .typed(proxy::MxCrashScProxy)
             .crash_point()
             .returns(ReturnsResultUnmanaged)
             .run()
-            .await;
-
-        println!("Result: {result_value:?}");
+            .await
     }
 
     pub async fn contestants(&mut self) {
@@ -307,7 +307,7 @@ impl ContractInteract {
 
     pub async fn submit_bet(
         &mut self,
-        caller: Address,
+        caller: &Address,
         cash_out: u32,
         egld_amount: BigUint<StaticApi>,
     ) {
@@ -330,10 +330,11 @@ impl ContractInteract {
     }
 
     pub async fn end_game(&mut self) {
+        let admin_address = self.get_admin_address().await;
         let response = self
             .interactor
             .tx()
-            .from(&self.wallet_address)
+            .from(admin_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -345,11 +346,11 @@ impl ContractInteract {
         println!("Result: {response:?}");
     }
 
-    pub async fn claim(&mut self) {
+    pub async fn claim(&mut self, caller: Address) {
         let response = self
             .interactor
             .tx()
-            .from(&self.wallet_address)
+            .from(caller)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -359,6 +360,48 @@ impl ContractInteract {
             .await;
 
         println!("Result: {response:?}");
+    }
+
+    pub async fn set_duration(&mut self, duration: u64) {
+        let admin_address = self.get_admin_address().await;
+
+        let response = self
+            .interactor
+            .tx()
+            .from(admin_address)
+            .to(self.state.current_address())
+            .gas(30_000_000u64)
+            .typed(proxy::MxCrashScProxy)
+            .set_duration(duration)
+            .returns(ReturnsResultUnmanaged)
+            .run()
+            .await;
+
+        println!("Result: {response:?}");
+    }
+
+    pub async fn add_admin(&mut self, new_admin_address: Address) {
+        let admin_address = self.get_admin_address().await;
+        let response = self
+            .interactor
+            .tx()
+            .from(admin_address)
+            .to(self.state.current_address())
+            .gas(30_000_000u64)
+            .typed(proxy::MxCrashScProxy)
+            .add_admin(new_admin_address)
+            .returns(ReturnsResultUnmanaged)
+            .run()
+            .await;
+
+        println!("Result: {response:?}");
+    }
+
+    pub async fn get_admin_address(&mut self) -> Address {
+        let file_path = "../../wallets/admin.pem";
+        let wallet = Wallet::from_pem_file(file_path).unwrap();
+
+        self.interactor.register_wallet(wallet).await
     }
 
     pub async fn compute_prizes(&mut self) {

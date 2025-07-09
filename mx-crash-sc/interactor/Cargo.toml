@@ -14,6 +14,7 @@ path = "src/interact.rs"
 
 [dependencies]
 toml = "0.8.6"
+regex = "1.10"
 
 [dependencies.mx-crash-sc]
 path = ".."

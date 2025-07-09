@@ -46,11 +46,13 @@ pub trait MxCrashSc:
     #[upgrade]
     fn upgrade(&self) {}
 
+    // Maybe only admin here
     #[only_owner]
     #[payable("EGLD")]
     #[endpoint(deposit)]
     fn deposit(&self) {}
 
+    // Maybe only admin here
     #[only_owner]
     #[endpoint(withdraw)]
     fn withdraw(&self) {
@@ -80,6 +82,7 @@ pub trait MxCrashSc:
         self.user_permission(&caller).clear();
     }
 
+    // Maybe only admin here
     #[only_owner]
     #[endpoint(setDuration)]
     fn set_duration(&self, duration: Timestamp) {
@@ -90,6 +93,7 @@ pub trait MxCrashSc:
         self.game_duration().set(duration);
     }
 
+    // Maybe only admin here
     #[only_owner]
     #[endpoint(setInstantCrashChance)]
     fn set_instant_crash_chance(&self, chance: u64) {
