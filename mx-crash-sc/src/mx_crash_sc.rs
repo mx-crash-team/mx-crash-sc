@@ -46,19 +46,17 @@ pub trait MxCrashSc:
     #[upgrade]
     fn upgrade(&self) {}
 
-    // Maybe only admin here
-    #[only_owner]
+    #[only_admin]
     #[payable("EGLD")]
     #[endpoint(deposit)]
     fn deposit(&self) {}
 
-    // Maybe only admin here
-    #[only_owner]
+    #[only_admin]
     #[endpoint(withdraw)]
     fn withdraw(&self) {
         require!(
             self.status().get() == Status::Ended,
-            "a game is currently ongoing"
+            "A game is currently ongoing"
         );
 
         let caller = self.blockchain().get_caller();
@@ -82,18 +80,16 @@ pub trait MxCrashSc:
         self.user_permission(&caller).clear();
     }
 
-    // Maybe only admin here
     #[only_owner]
     #[endpoint(setDuration)]
     fn set_duration(&self, duration: Timestamp) {
         require!(
             duration <= TEN_MINUTES,
-            "duration cannot be greater than 10 min"
+            "Duration cannot be greater than 10 min"
         );
         self.game_duration().set(duration);
     }
 
-    // Maybe only admin here
     #[only_owner]
     #[endpoint(setInstantCrashChance)]
     fn set_instant_crash_chance(&self, chance: u64) {
