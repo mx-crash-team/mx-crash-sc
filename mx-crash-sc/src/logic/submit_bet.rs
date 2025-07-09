@@ -12,13 +12,13 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
     fn submit_bet(&self, cash_out: u32, optional_contestant: OptionalValue<ManagedAddress>) {
         require!(
             self.status().get() == Status::Ongoing,
-            "game has not started yet"
+            "Game has not started yet"
         );
         let current_timestamp = self.blockchain().get_block_timestamp();
         let game_times = self.game_times().get();
         require!(
             game_times.init_moment + game_times.duration > current_timestamp,
-            "bet submission has ended"
+            "Bet submission has ended"
         );
 
         let caller = self.blockchain().get_caller();
@@ -37,7 +37,7 @@ pub trait BettingModule: storage::StorageModule + events::EventsModule {
 
         require!(
             self.bet(&contestant).is_empty(),
-            "cannot submit multiple bets"
+            "Cannot submit multiple bets"
         );
 
         let aimed_win_amount = &payment * cash_out / 100u32;
