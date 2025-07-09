@@ -22,6 +22,7 @@ pub struct Config {
 
 impl Config {
     // Deserializes config from file
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         let mut file = std::fs::File::open(CONFIG_FILE).unwrap();
         let mut content = String::new();

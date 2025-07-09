@@ -1,6 +1,5 @@
 use crate::{
     basics::{
-        constants::TEN_MINUTES,
         events,
         storage::{self},
     },
@@ -21,14 +20,14 @@ pub trait EndGameModule:
     fn end_game(&self) {
         require!(
             self.status().get() == Status::Ongoing,
-            "game was already ended"
+            "Game was already ended"
         );
 
         let curent_timestamp = self.blockchain().get_block_timestamp();
         let game_times = self.game_times().get();
 
         require!(
-            curent_timestamp >= game_times.init_moment + TEN_MINUTES,
+            curent_timestamp >= game_times.init_moment + self.game_duration().get(),
             "The needed time frame has not been reached"
         );
 

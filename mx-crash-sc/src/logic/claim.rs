@@ -10,7 +10,7 @@ pub trait ClaimModule: storage::StorageModule {
 
         require!(
             !self.available_prize(&caller).is_empty(),
-            "unavailable claim"
+            "Nothing to claim"
         );
 
         let prize = self.available_prize(&caller).take();

@@ -46,17 +46,17 @@ pub trait MxCrashSc:
     #[upgrade]
     fn upgrade(&self) {}
 
-    #[only_owner]
+    #[only_admin]
     #[payable("EGLD")]
     #[endpoint(deposit)]
     fn deposit(&self) {}
 
-    #[only_owner]
+    #[only_admin]
     #[endpoint(withdraw)]
     fn withdraw(&self) {
         require!(
             self.status().get() == Status::Ended,
-            "a game is currently ongoing"
+            "A game is currently ongoing"
         );
 
         let caller = self.blockchain().get_caller();
@@ -85,7 +85,7 @@ pub trait MxCrashSc:
     fn set_duration(&self, duration: Timestamp) {
         require!(
             duration <= TEN_MINUTES,
-            "duration cannot be greater than 10 min"
+            "Duration cannot be greater than 10 min"
         );
         self.game_duration().set(duration);
     }
