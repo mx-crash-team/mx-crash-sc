@@ -67,7 +67,7 @@ async fn devnet_get_game_details() {
 
     let game_details = interactor.get_game_details().await;
 
-    println!("{:?}", game_details);
+    println!("{game_details:?}");
 }
 
 #[tokio::test]
