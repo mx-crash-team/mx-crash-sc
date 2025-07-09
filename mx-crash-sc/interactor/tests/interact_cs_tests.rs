@@ -1,5 +1,5 @@
 use multiversx_sc_snippets::imports::*;
-use rust_interact::config::{ChainType, Config};
+use rust_interact::config::Config;
 use rust_interact::ContractInteract;
 pub const ONE_EGLD: u128 = 100_000_000_000_000_000u128;
 
