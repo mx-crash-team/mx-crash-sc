@@ -46,7 +46,7 @@ pub trait AwardingModule:
             let prize_amount = &bet.amount * bet.cash_out / 100u32;
             self.available_prize(&contestant)
                 .update(|amount| *amount += &prize_amount);
-            self.winner_announcement_event(&contestant, &prize_amount, game_nonce);
+            self.winner_announcement_event(&contestant, &prize_amount, bet.cash_out, game_nonce);
             win_amount += prize_amount;
         }
         for contestant in checked_contestants.iter() {
