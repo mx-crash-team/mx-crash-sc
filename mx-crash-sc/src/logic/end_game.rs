@@ -14,10 +14,12 @@ pub trait EndGameModule:
     + crashpoint::CrashpointModule
     + events::EventsModule
     + multiversx_sc_modules::only_admin::OnlyAdminModule
+    + multiversx_sc_modules::pause::PauseModule
 {
     #[only_admin]
     #[endpoint(endGame)]
     fn end_game(&self) {
+        self.require_not_paused();
         require!(
             self.status().get() == Status::Ongoing,
             "Game was already ended"

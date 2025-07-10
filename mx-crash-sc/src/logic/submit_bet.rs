@@ -17,6 +17,7 @@ pub trait BettingModule:
     #[payable("EGLD")]
     #[endpoint(submitBet)]
     fn submit_bet(&self, cash_out: u32, optional_contestant: OptionalValue<ManagedAddress>) {
+        self.require_not_paused();
         let status = self.status().get();
 
         if status == Status::Ended {

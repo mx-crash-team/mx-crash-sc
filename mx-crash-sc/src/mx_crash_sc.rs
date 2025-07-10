@@ -51,12 +51,14 @@ pub trait MxCrashSc:
     #[only_admin]
     #[payable("EGLD")]
     #[endpoint(deposit)]
-    fn deposit(&self) {}
+    fn deposit(&self) {
+        self.require_not_paused();
+    }
 
     #[only_admin]
     #[endpoint(withdraw)]
     fn withdraw(&self) {
-        self.require_allowed_to_make_setup_changes();
+        self.require_not_paused();
 
         let caller = self.blockchain().get_caller();
         let sc_address = self.blockchain().get_sc_address();
@@ -69,12 +71,14 @@ pub trait MxCrashSc:
 
     #[endpoint(givePermission)]
     fn give_permission(&self, permitted_address: ManagedAddress) {
+        self.require_not_paused();
         let caller = self.blockchain().get_caller();
         self.user_permission(&caller).set(permitted_address);
     }
 
     #[endpoint(revokePermission)]
     fn revoke_permission(&self) {
+        self.require_not_paused();
         let caller = self.blockchain().get_caller();
         self.user_permission(&caller).clear();
     }
@@ -82,7 +86,6 @@ pub trait MxCrashSc:
     #[only_owner]
     #[endpoint(setDuration)]
     fn set_duration(&self, duration: Timestamp) {
-        self.require_allowed_to_make_setup_changes();
         require!(
             duration <= TEN_MINUTES,
             "Duration cannot be greater than 10 min"
@@ -93,14 +96,6 @@ pub trait MxCrashSc:
     #[only_owner]
     #[endpoint(setInstantCrashChance)]
     fn set_instant_crash_chance(&self, chance: u64) {
-        self.require_allowed_to_make_setup_changes();
         self.instant_crash_chance().set(chance);
-    }
-
-    fn require_allowed_to_make_setup_changes(&self) {
-        require!(
-            self.status().get() == Status::Ended && self.is_paused(),
-            "action requires pause & no game ongoing"
-        )
     }
 }

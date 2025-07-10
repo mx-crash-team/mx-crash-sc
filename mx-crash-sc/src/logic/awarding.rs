@@ -11,10 +11,14 @@ use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
 pub trait AwardingModule:
-    storage::StorageModule + crashpoint::CrashpointModule + events::EventsModule
+    storage::StorageModule
+    + crashpoint::CrashpointModule
+    + events::EventsModule
+    + multiversx_sc_modules::pause::PauseModule
 {
     #[endpoint(computePrizes)]
     fn compute_prizes(&self) {
+        self.require_not_paused();
         require!(
             self.status().get() == Status::Awarding,
             "game was already ended"
