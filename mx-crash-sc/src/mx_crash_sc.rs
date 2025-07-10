@@ -29,6 +29,7 @@ pub trait MxCrashSc:
     + awarding::AwardingModule
     + views::ViewsModule
     + multiversx_sc_modules::only_admin::OnlyAdminModule
+    + multiversx_sc_modules::pause::PauseModule
 {
     #[init]
     fn init(&self) {
@@ -41,6 +42,7 @@ pub trait MxCrashSc:
         self.game_duration().set(ONE_MINUTE);
         self.instant_crash_chance()
             .set(DEFAULT_INSTANT_CRASH_CHANCE);
+        self.set_paused(false);
     }
 
     #[upgrade]
@@ -54,10 +56,7 @@ pub trait MxCrashSc:
     #[only_admin]
     #[endpoint(withdraw)]
     fn withdraw(&self) {
-        require!(
-            self.status().get() == Status::Ended,
-            "A game is currently ongoing"
-        );
+        self.require_allowed_to_make_setup_changes();
 
         let caller = self.blockchain().get_caller();
         let sc_address = self.blockchain().get_sc_address();
@@ -83,6 +82,7 @@ pub trait MxCrashSc:
     #[only_owner]
     #[endpoint(setDuration)]
     fn set_duration(&self, duration: Timestamp) {
+        self.require_allowed_to_make_setup_changes();
         require!(
             duration <= TEN_MINUTES,
             "Duration cannot be greater than 10 min"
@@ -93,6 +93,14 @@ pub trait MxCrashSc:
     #[only_owner]
     #[endpoint(setInstantCrashChance)]
     fn set_instant_crash_chance(&self, chance: u64) {
+        self.require_allowed_to_make_setup_changes();
         self.instant_crash_chance().set(chance);
+    }
+
+    fn require_allowed_to_make_setup_changes(&self) {
+        require!(
+            self.status().get() == Status::Ended && self.is_paused(),
+            "action requires pause & no game ongoing"
+        )
     }
 }

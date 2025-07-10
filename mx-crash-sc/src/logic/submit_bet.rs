@@ -1,19 +1,30 @@
 use crate::{
     basics::{events, storage},
-    specific::{bet::Bet, status::Status},
+    logic::init_game,
+    specific::{bet::Bet, crashpoint, status::Status},
 };
 
 use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
-pub trait BettingModule: storage::StorageModule + events::EventsModule {
+pub trait BettingModule:
+    storage::StorageModule
+    + events::EventsModule
+    + init_game::InitGameModule
+    + crashpoint::CrashpointModule
+    + multiversx_sc_modules::pause::PauseModule
+{
     #[payable("EGLD")]
     #[endpoint(submitBet)]
     fn submit_bet(&self, cash_out: u32, optional_contestant: OptionalValue<ManagedAddress>) {
-        require!(
-            self.status().get() == Status::Ongoing,
-            "Game has not started yet"
-        );
+        let status = self.status().get();
+
+        if status == Status::Ended {
+            self.new_game();
+        } else {
+            require!(status == Status::Ongoing, "Game has not started yet");
+        }
+
         let current_timestamp = self.blockchain().get_block_timestamp();
         let game_times = self.game_times().get();
         require!(
