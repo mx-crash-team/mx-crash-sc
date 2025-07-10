@@ -94,7 +94,12 @@ impl ContractInteract {
             .use_chain_simulator(config.use_chain_simulator());
 
         interactor.set_current_dir_from_workspace("mx_crash_sc");
-        let wallet_address = interactor.register_wallet(test_wallets::alice()).await;
+        let file_path = "../../keystores/keystore.json";
+        let wallet_address = interactor
+            .register_wallet(
+                Wallet::from_keystore_secret(file_path, InsertPassword::StandardInput).unwrap(),
+            )
+            .await;
 
         // Useful in the chain simulator setting
         // generate blocks until ESDTSystemSCAddress is enabled
