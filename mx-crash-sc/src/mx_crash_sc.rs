@@ -42,6 +42,7 @@ pub trait MxCrashSc:
         self.game_duration().set(ONE_MINUTE);
         self.instant_crash_chance()
             .set(DEFAULT_INSTANT_CRASH_CHANCE);
+        self.add_admin(self.blockchain().get_caller());
         self.set_paused(false);
     }
 
