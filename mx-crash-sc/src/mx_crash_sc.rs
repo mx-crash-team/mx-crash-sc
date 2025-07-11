@@ -29,6 +29,7 @@ pub trait MxCrashSc:
     + awarding::AwardingModule
     + views::ViewsModule
     + multiversx_sc_modules::only_admin::OnlyAdminModule
+    + multiversx_sc_modules::pause::PauseModule
 {
     #[init]
     fn init(&self) {
@@ -41,6 +42,7 @@ pub trait MxCrashSc:
         self.game_duration().set(ONE_MINUTE);
         self.instant_crash_chance()
             .set(DEFAULT_INSTANT_CRASH_CHANCE);
+        self.set_paused(false);
     }
 
     #[upgrade]
@@ -49,15 +51,14 @@ pub trait MxCrashSc:
     #[only_admin]
     #[payable("EGLD")]
     #[endpoint(deposit)]
-    fn deposit(&self) {}
+    fn deposit(&self) {
+        self.require_not_paused();
+    }
 
     #[only_admin]
     #[endpoint(withdraw)]
     fn withdraw(&self) {
-        require!(
-            self.status().get() == Status::Ended,
-            "A game is currently ongoing"
-        );
+        self.require_not_paused();
 
         let caller = self.blockchain().get_caller();
         let sc_address = self.blockchain().get_sc_address();
@@ -70,12 +71,14 @@ pub trait MxCrashSc:
 
     #[endpoint(givePermission)]
     fn give_permission(&self, permitted_address: ManagedAddress) {
+        self.require_not_paused();
         let caller = self.blockchain().get_caller();
         self.user_permission(&caller).set(permitted_address);
     }
 
     #[endpoint(revokePermission)]
     fn revoke_permission(&self) {
+        self.require_not_paused();
         let caller = self.blockchain().get_caller();
         self.user_permission(&caller).clear();
     }

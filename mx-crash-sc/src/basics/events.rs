@@ -22,6 +22,7 @@ pub trait EventsModule {
         &self,
         #[indexed] winner: &ManagedAddress,
         #[indexed] prize: &BigUint,
+        #[indexed] cash_out: u32,
         #[indexed] game_nonce: u32,
     );
 }

@@ -11,10 +11,14 @@ use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
 pub trait AwardingModule:
-    storage::StorageModule + crashpoint::CrashpointModule + events::EventsModule
+    storage::StorageModule
+    + crashpoint::CrashpointModule
+    + events::EventsModule
+    + multiversx_sc_modules::pause::PauseModule
 {
     #[endpoint(computePrizes)]
     fn compute_prizes(&self) {
+        self.require_not_paused();
         require!(
             self.status().get() == Status::Awarding,
             "game was already ended"
@@ -42,7 +46,7 @@ pub trait AwardingModule:
             let prize_amount = &bet.amount * bet.cash_out / 100u32;
             self.available_prize(&contestant)
                 .update(|amount| *amount += &prize_amount);
-            self.winner_announcement_event(&contestant, &prize_amount, game_nonce);
+            self.winner_announcement_event(&contestant, &prize_amount, bet.cash_out, game_nonce);
             win_amount += prize_amount;
         }
         for contestant in checked_contestants.iter() {

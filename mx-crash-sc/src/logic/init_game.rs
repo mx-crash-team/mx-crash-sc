@@ -10,10 +10,15 @@ use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
 pub trait InitGameModule:
-    storage::StorageModule + crashpoint::CrashpointModule + events::EventsModule
+    storage::StorageModule
+    + crashpoint::CrashpointModule
+    + events::EventsModule
+    + multiversx_sc_modules::pause::PauseModule
 {
     #[endpoint(newGame)]
     fn new_game(&self) {
+        self.require_not_paused();
+
         require!(
             self.status().get() == Status::Ended,
             "Another game is currently ongoing"

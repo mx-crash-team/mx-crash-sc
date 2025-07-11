@@ -3,9 +3,10 @@ use crate::basics::storage;
 use multiversx_sc::imports::*;
 
 #[multiversx_sc::module]
-pub trait ClaimModule: storage::StorageModule {
+pub trait ClaimModule: storage::StorageModule + multiversx_sc_modules::pause::PauseModule {
     #[endpoint(claim)]
     fn claim(&self) {
+        self.require_not_paused();
         let caller = self.blockchain().get_caller();
 
         require!(
