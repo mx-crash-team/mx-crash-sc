@@ -70,21 +70,6 @@ async fn devnet_get_game_details() {
     println!("{game_details:?}");
 }
 
-#[tokio::test]
-#[cfg_attr(not(feature = "chain-simulator-tests"), ignore)]
-async fn devnet_add_admin() {
-    // let devnet_config = Config {
-    //     gateway_uri: "https://devnet-gateway.multiversx.com".to_string(),
-    //     chain_type: ChainType::Real,
-    // };
-
-    let mut interactor = ContractInteract::new(Config::chain_simulator_config()).await;
-
-    let admin_address = interactor.get_admin_address().await;
-
-    interactor.add_admin(admin_address).await;
-}
-
 // We either call the deposit function or make the contract payable
 #[tokio::test]
 #[cfg_attr(not(feature = "chain-simulator-tests"), ignore)]

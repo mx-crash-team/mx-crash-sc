@@ -12,6 +12,8 @@ use std::{
 };
 
 const STATE_FILE: &str = "state.toml";
+const MX_CRASH_SC_DIR: &str = "mx_crash_sh";
+const KEYSTORE_DIR_PATH: &str = "../../keystores/keystore.json";
 
 pub async fn mx_crash_sc_cli() {
     env_logger::init();
@@ -93,11 +95,11 @@ impl ContractInteract {
             .await
             .use_chain_simulator(config.use_chain_simulator());
 
-        interactor.set_current_dir_from_workspace("mx_crash_sc");
-        let file_path = "../../keystores/keystore.json";
+        interactor.set_current_dir_from_workspace(MX_CRASH_SC_DIR);
         let wallet_address = interactor
             .register_wallet(
-                Wallet::from_keystore_secret(file_path, InsertPassword::StandardInput).unwrap(),
+                Wallet::from_keystore_secret(KEYSTORE_DIR_PATH, InsertPassword::StandardInput)
+                    .unwrap(),
             )
             .await;
 
@@ -119,12 +121,10 @@ impl ContractInteract {
     }
 
     pub async fn deploy(&mut self) {
-        let admin_address = self.get_admin_address().await;
-
         let new_address = self
             .interactor
             .tx()
-            .from(admin_address)
+            .from(&self.wallet_address)
             .gas(60_000_000u64)
             .typed(proxy::MxCrashScProxy)
             .init()
@@ -157,11 +157,10 @@ impl ContractInteract {
     }
 
     pub async fn deposit(&mut self, egld_amount: BigUint<StaticApi>) {
-        let admin_address = self.get_admin_address().await;
         let response = self
             .interactor
             .tx()
-            .from(admin_address)
+            .from(&self.wallet_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -225,11 +224,10 @@ impl ContractInteract {
     }
 
     pub async fn new_game(&mut self) {
-        let admin_address = self.get_admin_address().await;
         let response = self
             .interactor
             .tx()
-            .from(admin_address)
+            .from(&self.wallet_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -335,11 +333,10 @@ impl ContractInteract {
     }
 
     pub async fn end_game(&mut self) {
-        let admin_address = self.get_admin_address().await;
         let response = self
             .interactor
             .tx()
-            .from(admin_address)
+            .from(&self.wallet_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -368,12 +365,10 @@ impl ContractInteract {
     }
 
     pub async fn set_duration(&mut self, duration: u64) {
-        let admin_address = self.get_admin_address().await;
-
         let response = self
             .interactor
             .tx()
-            .from(admin_address)
+            .from(&self.wallet_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -386,11 +381,10 @@ impl ContractInteract {
     }
 
     pub async fn add_admin(&mut self, new_admin_address: Address) {
-        let admin_address = self.get_admin_address().await;
         let response = self
             .interactor
             .tx()
-            .from(admin_address)
+            .from(&self.wallet_address)
             .to(self.state.current_address())
             .gas(30_000_000u64)
             .typed(proxy::MxCrashScProxy)
@@ -400,13 +394,6 @@ impl ContractInteract {
             .await;
 
         println!("Result: {response:?}");
-    }
-
-    pub async fn get_admin_address(&mut self) -> Address {
-        let file_path = "../../wallets/admin.pem";
-        let wallet = Wallet::from_pem_file(file_path).unwrap();
-
-        self.interactor.register_wallet(wallet).await
     }
 
     pub async fn compute_prizes(&mut self) {
