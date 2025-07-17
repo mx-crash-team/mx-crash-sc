@@ -33,6 +33,8 @@ pub trait BettingModule:
             "Bet submission has ended"
         );
 
+        require!(cash_out >= 110, "Cash out must be greater than 1.1x");
+
         let caller = self.blockchain().get_caller();
 
         let contestant: ManagedAddress = if optional_contestant.is_none() {
